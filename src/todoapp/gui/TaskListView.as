@@ -36,7 +36,12 @@ package todoapp.gui
 		
 		protected function module_initializeHandler(event:FlexEvent):void
 		{
-			tasks = taskService.find();
+			taskService.find(
+				function(result:ArrayCollection):void
+				{
+					tasks = result;
+				}
+			);	
 		}
 		
 		public function onDeleteTaskHandler(event:TaskEvent):void
@@ -48,8 +53,12 @@ package todoapp.gui
 					{
 						if((e.detail & Alert.OK) == Alert.OK)
 						{
-							if (taskService.remove(event.data))
-								tasks.removeItem(event.data);
+							taskService.remove(event.data,
+								function(result:Boolean):void
+								{
+									if (result)
+										tasks.removeItem(event.data);
+								});	
 						}
 					});	
 		}
@@ -59,7 +68,11 @@ package todoapp.gui
 			if (taskNameInput && taskNameInput.text && taskNameInput.text.length > 0){
 				var newTask:Task = new Task;		
 				newTask.name = taskNameInput.text;
-				newTask.id = taskService.save(newTask);
+				taskService.save(newTask,
+					function(result:int):void
+					{
+						newTask.id = result;
+					});	
 				tasks.addItem(newTask);
 				taskNameInput.text = '';
 			}

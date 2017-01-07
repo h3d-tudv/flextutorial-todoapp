@@ -34,14 +34,14 @@ package todoapp.service
 		}
 		
 		
-		public function find():ArrayCollection
+		public function find(completeCallback:Function, failCallback:Function=null):void
 		{
 			var results:ArrayCollection = new ArrayCollection;
 			for each (var task:Task in tasks)
 			{
 				results.addItem(task.clone());
 			}
-			return results;
+			completeCallback(results);
 		}
 		
 		private function findById(id:int):Task
@@ -54,13 +54,16 @@ package todoapp.service
 			}
 			return null;
 		}
-		public function findOne(id:int):Task
+		public function findOne(id:int, completeCallback:Function, failCallback:Function=null):void
 		{
 			var task:Task = findById(id);
-			return (task != null) ? task.clone() : null;
+			if (task != null)
+				completeCallback(task.clone());
+			else
+				completeCallback(null);
 		}
 		
-		public function save(task:Task):int
+		public function save(task:Task, completeCallback:Function, failCallback:Function=null):void
 		{
 			if (isNaN(task.id) || task.id == 0)
 				task.id = taskId++;
@@ -73,10 +76,10 @@ package todoapp.service
 			else
 				tasks.addItem(task); //add
 			
-			return task.id;
+			completeCallback(task.id);
 		}
 		
-		public function remove(data:Object):Boolean
+		public function remove(data:Object, completeCallback:Function, failCallback:Function=null):void
 		{
 			var id:Number;
 			var result:Boolean;
@@ -87,7 +90,10 @@ package todoapp.service
 				id = Number(data['id']);
 			
 			var task:Task = findById(id);
-			return (task != null) ? tasks.removeItem(task) : false;
+			if (task != null) 
+				completeCallback(tasks.removeItem(task))
+			else
+				completeCallback(false);
 		}
 		
 	}
