@@ -1,122 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="400" minHeight="400"
-			   initialize="application_initializeHandler(event)"
-			   creationComplete="application_creationCompleteHandler(event)">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500"
+			   creationComplete="application_creationCompleteHandler(event)" 
+			   xmlns:gui="todoapp.gui.*" 
+			   xmlns:component="todoapp.component.*">
+	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
-			import mx.core.FlexGlobals;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			
-			import todoapp.event.TaskEvent;
+			import spark.events.IndexChangeEvent;
+			
 			import todoapp.model.Task;
 			
 			[Bindable]
-			public var task:Task;
-			public var taskId:int;
+			public var selectedTask:Task;
 			
-			[Bindable]
-			public var tasks:ArrayCollection = new ArrayCollection;
-			
-			protected const TASK_NAMES:Array = ['Get some food', 'Feed the cat', 'Buy a gift for mom', 'Set up Site surveyor', 'Summit planning permission', 'Send presentation to professor', 'Return book to the library', 'Take out the trash', 'Send invitations', 'Go to the bank'];
-			
-			protected function application_initializeHandler(event:FlexEvent):void{
-				taskId = 1;
-				for each (var taskName:String in TASK_NAMES){
-					var item:Task = new Task;
-					item.id = taskId++;
-					item.name = taskName;
-					tasks.addItem(item);
-				}
-				
-				task = new Task();
-				task.id = 1;
-				task.name = "my first task";
-				task.description = "my first task";
-			}
-			
-			public function taskLabelFunction(item:Object):String
+			protected function taskList_changeHandler(event:IndexChangeEvent):void
 			{
-				return (item is Task) ? Task(item).name : "";
-			}
-			
-			protected function addButton_clickHandler(event:MouseEvent):void{
-				if (taskNameInput && taskNameInput.text && taskNameInput.text.length > 0){
-					var newTask:Task = new Task;		
-					newTask.id = taskId++;
-					newTask.name = taskNameInput.text;
-					tasks.addItem(newTask);
-					taskNameInput.text = '';
-				}
+				if (taskListView.taskList)
+					selectedTask = taskListView.taskList.selectedItem;
 			}
 			
 			protected function application_creationCompleteHandler(event:FlexEvent):void
 			{
-				taskList.addEventListener(TaskEvent.DELETE_TASK, onDeleteTaskHandler);
+				taskListView.taskList.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler);
 			}
 			
-			public function onDeleteTaskHandler(event:TaskEvent):void
-			{
-				if (event.data is Task && tasks)
-					Alert.show("Are you sure you want to delete this task", "Delete Task confirm", Alert.OK | Alert.CANCEL,
-						FlexGlobals.topLevelApplication as Sprite,
-						function(e:CloseEvent):void
-						{
-							if((e.detail & Alert.OK) == Alert.OK)
-							{
-								tasks.removeItem(event.data);
-							}
-						});
-			}
 		]]>
 	</fx:Script>
 	<s:VGroup width="100%" height="100%" padding="30" gap="50">
 		<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
 		<s:HGroup width="100%" height="100%" gap="100"
 				  verticalAlign="middle">
-			<s:VGroup height="100%" gap="20">
-				<s:Label text="Task List" fontSize="20"/>
-				<s:VGroup gap="2">
-					<s:Label text="Task Name: " color="#A0A0A0"/>
-					<s:HGroup verticalAlign="middle">
-						<s:TextInput id="taskNameInput" width="170"/>
-						<s:Button id="addButton" label="Add" width="45"
-								  skinClass="todoapp.gui.skin.AddButtonSkin"
-								  click="addButton_clickHandler(event)"/>
-					</s:HGroup>
-				</s:VGroup>
-				<s:List id="taskList" dataProvider="{tasks}" width="220" borderVisible="false"
-						itemRenderer="todoapp.component.TaskItemRenderer">
-					<s:layout>
-						<s:VerticalLayout gap="7"/>
-					</s:layout>
-				</s:List>
-			</s:VGroup>
-			
-			<s:VGroup height="100%">
-				<s:Label text="{taskList.selectedItem.name + ' deltails'}" fontSize="20" color="0x777777"/>
-				
-				<s:Form id="taskDetailForm" height="100%" visible="{taskList.selectedItem != null}">
-					<s:layout>
-						<s:FormLayout gap="-14"/>
-					</s:layout>
-					<s:FormItem label="id:" color="#C0C0C0">
-						<s:Label text="{taskList.selectedItem.id}" color="#C0C0C0"/>
-					</s:FormItem>
-					
-					<s:FormItem label="name:" color="#C0C0C0">
-						<s:TextInput id="nameInput" text="@{taskList.selectedItem.name}" width="200" color="#000000"/>
-					</s:FormItem>
-					
-					<s:FormItem label="description:" color="#C0C0C0">
-						<s:TextArea id="description" text="@{taskList.selectedItem.description}" heightInLines="3" width="200" color="#000000"/>
-					</s:FormItem>
-				</s:Form>
-			</s:VGroup>
+			<gui:TaskListView id="taskListView" height="100%"/>
+			<component:TaskDetail id="taskDetail" task="{selectedTask}" height="100%"/>
 		</s:HGroup>
 	</s:VGroup>
 </s:Application>

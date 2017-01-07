@@ -1,0 +1,16 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace gui "todoapp.gui.*";
+
+gui|TaskListView{
+	skinClass:ClassReference("todoapp.gui.skin.TaskListViewSkin");
+}
+
+s|Button#addButton{
+	skinClass:ClassReference("todoapp.gui.skin.AddButtonSkin");
+}
+
+s|Button#deleteButton{
+	skinClass:ClassReference("todoapp.gui.skin.DeleteButtonSkin");
+}

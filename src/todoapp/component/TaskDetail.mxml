@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import todoapp.model.Task;
+			[Bindable]
+			public var task:Task;
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout gap="20"/>
+	</s:layout>
+	<s:Label text="{task.name + ' deltails'}" fontSize="20" color="0x777777"/>
+	
+	<s:Form id="taskDetailForm" height="100%" visible="{task != null}">
+		<s:layout>
+			<s:FormLayout gap="-14"/>
+		</s:layout>
+		<s:FormItem label="id:" color="#C0C0C0">
+			<s:Label text="{task.id}" color="#C0C0C0"/>
+		</s:FormItem>
+		
+		<s:FormItem label="name:" color="#C0C0C0">
+			<s:TextInput id="nameInput" text="@{task.name}" width="200" color="#000000"/>
+		</s:FormItem>
+		
+		<s:FormItem label="description:" color="#C0C0C0">
+			<s:TextArea id="description" text="@{task.description}" heightInLines="3" width="200" color="#000000"/>
+		</s:FormItem>
+	</s:Form>
+</s:Group>
