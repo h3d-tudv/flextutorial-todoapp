@@ -8,5 +8,7 @@ package todoapp.model
 		public var name:String;
 		[Bindable]
 		public var description:String;
+		[Bindable]
+		public var done:Boolean;
 	}
 }

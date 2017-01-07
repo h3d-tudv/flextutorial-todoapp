@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import todoapp.event.TaskEvent;
+			protected function deleteButton_clickHandler(event:MouseEvent):void
+			{
+				owner.dispatchEvent(new TaskEvent(TaskEvent.DELETE_TASK, data));
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<s:HGroup id="contentGroup" width="100%" height="30" gap="0">
+		<s:Group id="statusContentGroup" height="100%" width="30">
+			<s:Rect topLeftRadiusX="5" topLeftRadiusY="5" bottomLeftRadiusX="5" bottomLeftRadiusY="5" width="100%" height="100%">
+				<s:fill>
+					<mx:SolidColor color="#607D8B"/>
+				</s:fill>
+			</s:Rect>
+			<s:CheckBox selected="{data.done}" verticalCenter="0" horizontalCenter="0"/>
+		</s:Group>
+		
+		<s:Group id="nameContentGroup" height="100%" width="100%">
+			<s:Rect topRightRadiusX="5" topRightRadiusY="5" bottomRightRadiusX="5" bottomRightRadiusY="5" width="100%" height="100%">
+				<s:fill>
+					<mx:SolidColor color="#EEEEEE" color.hovered="#DDDDDD" color.selected="#CFD8DC"/>
+				</s:fill>
+			</s:Rect>
+			<s:HGroup height="100%" width="100%" verticalAlign="middle" paddingRight="5">
+				<s:Label id="nameLabel" text="{data.name}" color="#808080" color.selected="#FFFFFF" verticalCenter="0" paddingLeft="10" width="100%"/>
+				<s:Button id="deleteButton" label="X" verticalCenter="0" right="5"
+						  visible="false" visible.hovered="true" visible.selected="true"
+						  skinClass="todoapp.gui.skin.DeleteButtonSkin"
+						  click="deleteButton_clickHandler(event)"/>
+			</s:HGroup>
+		</s:Group>
+	</s:HGroup>
+</s:ItemRenderer>
