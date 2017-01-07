@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="400" minHeight="400"
+			   initialize="application_initializeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import todoapp.model.Task;
+			
+			[Bindable]
+			public var task:Task;
+			
+			protected function application_initializeHandler(event:FlexEvent):void{
+				task = new Task();
+				task.id = 1;
+				task.name = "my first task";
+				task.description = "my first task";
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup width="100%" height="100%" horizontalAlign="center" 
+			  verticalAlign="middle">
+		<s:Label text="{task.name}" fontSize="40" color="0x777777" top="50"/>	
+		<s:TextInput text="@{task.name}"/>
+	</s:VGroup>
+</s:Application>
