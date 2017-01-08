@@ -2,40 +2,31 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500"
-			   creationComplete="application_creationCompleteHandler(event)" 
 			   xmlns:gui="todoapp.gui.*" 
-			   xmlns:component="todoapp.component.*">
-	
-	<fx:Script>
-		<![CDATA[
-			import mx.events.FlexEvent;
-			
-			import spark.events.IndexChangeEvent;
-			
-			import todoapp.model.Task;
-			
-			[Bindable]
-			public var selectedTask:Task;
-			
-			protected function taskList_changeHandler(event:IndexChangeEvent):void
-			{
-				if (taskListView.taskList)
-					selectedTask = taskListView.taskList.selectedItem;
-			}
-			
-			protected function application_creationCompleteHandler(event:FlexEvent):void
-			{
-				taskListView.taskList.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler);
-			}
-			
-		]]>
-	</fx:Script>
-	<s:VGroup width="100%" height="100%" padding="30" gap="50">
-		<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
-		<s:HGroup width="100%" height="100%" gap="100"
-				  verticalAlign="middle">
-			<gui:TaskListView id="taskListView" height="100%"/>
-			<component:TaskDetail id="taskDetail" task="{selectedTask}" height="100%"/>
-		</s:HGroup>
-	</s:VGroup>
+			   xmlns:component="todoapp.component.*" xmlns:ui="http://f-project.net/xmlns/fprj-ui/2015"
+			   >
+	<ui:VerticalTabNavigator id="bodyTab" width="100%" height="100%" borderVisible="false"
+							 tabBarStyleName="verticalTabBar"  selectedIndex="1">
+		<ui:topGroup>
+			<s:Group>
+				<ui:ToolbarButton id="tabViewButton" height="30" width="30"
+								  icon="@Embed('../resources/todoapp.png')"/>
+				<ui:HSeparator width="100%" top="34" paddingTop="0" paddingBottom="5"/>
+			</s:Group>
+		</ui:topGroup>
+		
+		<s:NavigatorContent label="data Grid">
+			<s:Label text="This is Data Grid View"/>
+		</s:NavigatorContent>
+		
+		<s:NavigatorContent label="List">
+			<gui:TaskListModule/>
+		</s:NavigatorContent>
+		
+		<ui:bottomGroup>
+			<s:Group>
+				<ui:HSeparator width="100%" bottom="35" paddingBottom="0" paddingTop="0"/>
+			</s:Group>
+		</ui:bottomGroup>
+	</ui:VerticalTabNavigator>
 </s:Application>

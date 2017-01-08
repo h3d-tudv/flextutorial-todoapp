@@ -5,6 +5,7 @@
 	<fx:Script>
 		<![CDATA[
 			import todoapp.model.Task;
+			
 			[Bindable]
 			public var task:Task;
 		]]>
