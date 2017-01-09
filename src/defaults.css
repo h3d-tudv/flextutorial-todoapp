@@ -16,5 +16,5 @@ s|Button#deleteButton{
 }
 
 gui|TaskListModule{
-	skinClass:ClassReference("todoapp.gui.TaskListModuleSkin");
+	skinClass:ClassReference("todoapp.gui.skin.TaskListModuleSkin");
 }
