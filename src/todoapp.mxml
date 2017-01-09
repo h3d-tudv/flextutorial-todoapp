@@ -16,11 +16,11 @@
 		</ui:topGroup>
 		
 		<s:NavigatorContent label="data Grid">
-			<gui:TaskGridModule/>
+			<gui:TaskGridView/>
 		</s:NavigatorContent>
 		
 		<s:NavigatorContent label="List">
-			<gui:TaskListModule/>
+			<gui:TaskListView/>
 		</s:NavigatorContent>
 		
 		<ui:bottomGroup>

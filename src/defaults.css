@@ -3,8 +3,8 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace gui "todoapp.gui.*";
 
-gui|TaskListView{
-	skinClass:ClassReference("todoapp.gui.skin.TaskListViewSkin");
+gui|TaskListComponent{
+	skinClass:ClassReference("todoapp.gui.skin.TaskListComponentSkin");
 }
 
 s|Button#addButton{
@@ -15,10 +15,10 @@ s|Button#deleteButton{
 	skinClass:ClassReference("todoapp.gui.skin.DeleteButtonSkin");
 }
 
-gui|TaskListModule{
-	skinClass:ClassReference("todoapp.gui.skin.TaskListModuleSkin");
+gui|TaskListView{
+	skinClass:ClassReference("todoapp.gui.skin.TaskListViewSkin");
 }
 
-gui|TaskGridModule{
-	skinClass:ClassReference("todoapp.gui.skin.TaskGridModuleSkin");
+gui|TaskGridView{
+	skinClass:ClassReference("todoapp.gui.skin.TaskGridViewSkin");
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("todoapp.gui.TaskListComponent")]
+	</fx:Metadata>
+	
+	<s:Group>
+		<s:layout>
+			<s:VerticalLayout gap="20"/>
+		</s:layout>
+		<fx:Script>
+			<![CDATA[
+				import todoapp.component.TaskItemRenderer;
+			]]>
+		</fx:Script>
+		
+		<s:Label text="Task List" fontSize="20"/>
+		<s:VGroup gap="2">
+			<s:Label text="Task Name: " color="#A0A0A0"/>
+			<s:HGroup verticalAlign="middle">
+				<s:TextInput id="taskNameInput" width="170"/>
+				<s:Button id="addButton" label="Add" width="45"/>
+			</s:HGroup>
+		</s:VGroup>
+		<s:List id="taskList" width="220" borderVisible="false"
+				itemRenderer="todoapp.component.TaskItemRenderer">
+			<s:layout>
+				<s:VerticalLayout gap="7"/>
+			</s:layout>
+		</s:List>
+	</s:Group>
+</s:Skin>
