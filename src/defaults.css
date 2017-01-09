@@ -18,3 +18,7 @@ s|Button#deleteButton{
 gui|TaskListModule{
 	skinClass:ClassReference("todoapp.gui.skin.TaskListModuleSkin");
 }
+
+gui|TaskGridModule{
+	skinClass:ClassReference("todoapp.gui.skin.TaskGridModuleSkin");
+}

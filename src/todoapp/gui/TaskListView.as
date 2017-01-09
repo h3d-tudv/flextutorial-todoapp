@@ -22,6 +22,9 @@ package todoapp.gui
 	
 	public class TaskListView extends SkinnableComponent
 	{
+		[Bindable]
+		public var tasks:ArrayCollection;
+		
 		public function TaskListView()
 		{
 			super();
@@ -77,9 +80,6 @@ package todoapp.gui
 				taskNameInput.text = '';
 			}
 		}
-		
-		[Bindable]
-		public var tasks:ArrayCollection;
 		
 		[SkinPart(required="true",type="static")]
 		public var taskNameInput:TextInput;

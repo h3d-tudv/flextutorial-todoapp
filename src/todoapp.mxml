@@ -16,7 +16,7 @@
 		</ui:topGroup>
 		
 		<s:NavigatorContent label="data Grid">
-			<s:Label text="This is Data Grid View"/>
+			<gui:TaskGridModule/>
 		</s:NavigatorContent>
 		
 		<s:NavigatorContent label="List">

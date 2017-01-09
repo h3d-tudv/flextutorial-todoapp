@@ -19,10 +19,10 @@ package todoapp.gui
 		{
 			super();
 			Injector.inject(this);
-			addEventListener(FlexEvent.INITIALIZE, module_initializeHandler);
+			addEventListener(FlexEvent.CREATION_COMPLETE, module_creationComplete);
 		}
 		
-		protected function module_initializeHandler(event:FlexEvent):void
+		protected function module_creationComplete(event:FlexEvent):void
 		{
 			if (taskListView && taskListView.taskList)
 				taskListView.taskList.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler);
