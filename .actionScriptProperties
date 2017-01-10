@@ -10,8 +10,8 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
-      <libraryPathEntry kind="3" linkType="1" path="/fprj-core/bin/fprj-core.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="F:/Gitrepo/pklib/projectkit-core/lib/fprj-ui-lib.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="F:/Gitrepo/f-project/fprj-core/bin/fprj-core.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

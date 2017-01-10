@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="500"
-			   xmlns:gui="todoapp.gui.*" 
-			   xmlns:component="todoapp.component.*" xmlns:ui="http://f-project.net/xmlns/fprj-ui/2015"
-			   >
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:gui="todoapp.gui.*"
+			   xmlns:component="todoapp.component.*"
+			   xmlns:ui="http://f-project.net/xmlns/fprj-ui/2015"
+			   minWidth="500" minHeight="500" maxWidth="900" viewSourceURL="srcview/index.html">
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			
+			import todoapp.gui.TaskModuleView;
+			
+			protected var activeView:TaskModuleView;
+			
+			protected function bodyTab_changeHandler(event:IndexChangeEvent):void
+			{
+				if (activeView)
+					activeView.disconnectView();
+				switch(bodyTab.selectedIndex)
+				{
+					case 0:
+					{
+						activeView = taskGridView;
+						break;
+					}
+						
+					default:
+					{
+						activeView = taskListView;
+					}
+				}
+				if (activeView)
+					activeView.connectView();
+			}
+			
+		]]>
+	</fx:Script>
 	<ui:VerticalTabNavigator id="bodyTab" width="100%" height="100%" borderVisible="false"
-							 tabBarStyleName="verticalTabBar"  selectedIndex="1">
+							 tabBarStyleName="verticalTabBar"  selectedIndex="1" change="bodyTab_changeHandler(event)">
 		<ui:topGroup>
 			<s:Group>
 				<ui:ToolbarButton id="tabViewButton" height="30" width="30"
@@ -16,11 +48,11 @@
 		</ui:topGroup>
 		
 		<s:NavigatorContent label="data Grid">
-			<gui:TaskGridView/>
+			<gui:TaskGridView id="taskGridView" height="100%"/>
 		</s:NavigatorContent>
 		
 		<s:NavigatorContent label="List">
-			<gui:TaskListView/>
+			<gui:TaskListView id="taskListView" height="100%"/>
 		</s:NavigatorContent>
 		
 		<ui:bottomGroup>

@@ -32,16 +32,17 @@ package todoapp.service
 				_instance = new TaskService();
 			return _instance;
 		}
-		
-		
-		public function find(completeCallback:Function, failCallback:Function=null):void
+
+
+		public function find(completeCallback:Function = null, failCallback:Function=null):void
 		{
 			var results:ArrayCollection = new ArrayCollection;
 			for each (var task:Task in tasks)
 			{
 				results.addItem(task.clone());
 			}
-			completeCallback(results);
+			if (completeCallback != null)
+				completeCallback(results);
 		}
 		
 		private function findById(id:int):Task
@@ -54,17 +55,24 @@ package todoapp.service
 			}
 			return null;
 		}
-		public function findOne(id:int, completeCallback:Function, failCallback:Function=null):void
+		public function findOne(id:int, completeCallback:Function = null, failCallback:Function=null):void
 		{
 			var task:Task = findById(id);
-			if (task != null)
+			if (task != null && completeCallback != null)
 				completeCallback(task.clone());
-			else
+			else if (completeCallback != null)
 				completeCallback(null);
 		}
 		
-		public function save(task:Task, completeCallback:Function, failCallback:Function=null):void
+		public function save(model:Object, completeCallback:Function=null, failCallback:Function=null):void
 		{
+			var task:Task = model as Task;
+			if (task == null)
+			{
+				if (failCallback != null)
+					failCallback(false);
+				return;
+			}
 			if (isNaN(task.id) || task.id == 0)
 				task.id = taskId++;
 			else
@@ -75,11 +83,11 @@ package todoapp.service
 				task.clone(oldTask); //update
 			else
 				tasks.addItem(task); //add
-			
-			completeCallback(task.id);
+			if (completeCallback != null)
+				completeCallback(task.id);
 		}
 		
-		public function remove(data:Object, completeCallback:Function, failCallback:Function=null):void
+		public function remove(data:Object, completeCallback:Function=null, failCallback:Function=null):void
 		{
 			var id:Number;
 			var result:Boolean;
@@ -88,13 +96,44 @@ package todoapp.service
 				id = Number(data);
 			else if (data.hasOwnProperty('id'))
 				id = Number(data['id']);
-			
+
 			var task:Task = findById(id);
-			if (task != null) 
-				completeCallback(tasks.removeItem(task))
-			else
-				completeCallback(false);
+			if (task != null)
+				tasks.removeItem(task);
+			if (completeCallback != null)
+				completeCallback(true);
 		}
 		
+		public function batchSave(models:Array, completeCallback:Function=null, failCallback:Function=null):void
+		{
+			var insertCount:int = 0;
+			var updateCount:int = 0;
+			for each (var model:Object in models)
+			{
+				if (model is Task){
+					if (isNaN(Task(model).id) || Task(model).id == 0)
+					{
+						insertCount++;
+					}
+					else 
+					{
+						updateCount++;
+					}
+					save(model);
+				}
+			}
+			var result:Object = {insertCount:insertCount, updateCount:updateCount, lastId:taskId};
+			if (completeCallback != null)
+				completeCallback(result);
+		}
+		
+		public function batchRemove(items:Array, completeCallback:Function=null, failCallback:Function=null):void
+		{
+			for each (var item:Object in items){
+				remove(item);				
+			}
+			if (completeCallback != null)
+				completeCallback(item);
+		}
 	}
 }

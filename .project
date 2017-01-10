@@ -3,6 +3,7 @@
 	<name>todoapp</name>
 	<comment></comment>
 	<projects>
+		<project>fprj-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
