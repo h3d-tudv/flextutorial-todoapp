@@ -17,5 +17,6 @@ package todoapp.event
 		}
 		
 		public static const DELETE_TASK:String = "deleteTask";
+		public static const ADD_TASK:String = "addTask";
 	}
 }

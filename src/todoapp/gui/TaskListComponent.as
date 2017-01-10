@@ -1,12 +1,10 @@
 package todoapp.gui
 {
-	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.events.CloseEvent;
+	import mx.events.CollectionEvent;
+	import mx.events.CollectionEventKind;
 	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.Button;
@@ -17,7 +15,6 @@ package todoapp.gui
 	import net.fproject.di.Injector;
 	
 	import todoapp.event.TaskEvent;
-	import todoapp.model.Task;
 	
 	public class TaskListComponent extends SkinnableComponent
 	{
@@ -27,8 +24,23 @@ package todoapp.gui
 			Injector.inject(this);
 		}
 		
+		private var _dataProvider:ArrayCollection;
+
 		[Bindable]
-		public var dataProvider:ArrayCollection;
+		public function get dataProvider():ArrayCollection
+		{
+			return _dataProvider;
+		}
+
+		public function set dataProvider(value:ArrayCollection):void
+		{
+			if (_dataProvider)
+				_dataProvider.removeEventListener(CollectionEvent.COLLECTION_CHANGE, onDataProviderChange);
+			_dataProvider = value;
+			if (_dataProvider)
+				_dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, onDataProviderChange);
+		}
+
 
 		[Bindable]
 		public var dragEnabled:Boolean = true;
@@ -39,30 +51,36 @@ package todoapp.gui
 		[Bindable]
 		public var dragMoveEnabled:Boolean = true;
 		
-		public function onDeleteTaskHandler(event:TaskEvent):void
-		{
-			if (event.data is Task && dataProvider)
-				Alert.show("Are you sure you want to delete this task", "Delete Task confirm", Alert.OK | Alert.CANCEL,
-					FlexGlobals.topLevelApplication as Sprite,
-					function(e:CloseEvent):void
-					{
-						if((e.detail & Alert.OK) == Alert.OK)
-						{
-							dataProvider.removeItem(event.data);
-						}
-					});	
-		}
+		[Bindable]
+		public var status:Object;
+		
+		[Bindable]
+		public var statusField:String = 'status';
 		
 		public function addButton_clickHandler(event:MouseEvent):void
 		{
 			if (taskNameInput && taskNameInput.text && taskNameInput.text.length > 0){
-				var newTask:Task = new Task;		
-				newTask.name = taskNameInput.text;
-				dataProvider.addItem(newTask);
+				var data:String = taskNameInput.text;
+				dispatchEvent(new TaskEvent(TaskEvent.ADD_TASK,data));
+					
 				taskNameInput.text = '';
 			}
 		}
 		
+		public function onDataProviderChange(event:CollectionEvent):void
+		{
+			if (event.kind == CollectionEventKind.ADD)
+			{
+				var saveItems:Array = new Array;
+				for each (var item:Object in event.items)
+				{
+					var data:Object = (item is PropertyChangeEvent) ? PropertyChangeEvent(item).source : item;
+					if (data.hasOwnProperty(statusField))
+						data[statusField] = status;
+				}
+			}
+		}
+			
 		[SkinPart(required="true",type="static")]
 		public var taskNameInput:TextInput;
 		
@@ -75,7 +93,6 @@ package todoapp.gui
 		[PropertyBinding (dropEnabled="dropEnabled@")]
 		[PropertyBinding (dragMoveEnabled="dragMoveEnabled@")]
 		[PropertyBinding (dataProvider="dataProvider@")]
-		[EventHandling(event="deleteTask", handler="onDeleteTaskHandler")]
 		public var taskList:List;
 	}
 }
