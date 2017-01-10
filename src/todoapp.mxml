@@ -28,7 +28,7 @@
 						
 					default:
 					{
-						activeView = taskListView;
+						activeView = taskCanbanView;
 					}
 				}
 				if (activeView)
@@ -52,7 +52,7 @@
 		</s:NavigatorContent>
 		
 		<s:NavigatorContent label="List">
-			<gui:TaskCanbanView id="taskListView" height="100%"/>
+			<gui:TaskCanbanView id="taskCanbanView" height="100%"/>
 		</s:NavigatorContent>
 		
 		<ui:bottomGroup>
