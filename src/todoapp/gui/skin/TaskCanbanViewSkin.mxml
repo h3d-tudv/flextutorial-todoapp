@@ -6,11 +6,11 @@
 		xmlns:component="todoapp.component.*">
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("todoapp.gui.TaskListView")]
+		[HostComponent("todoapp.gui.TaskCanbanView")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
-			import todoapp.gui.TaskListView;
+			import todoapp.gui.TaskCanbanView;
 		]]>
 	</fx:Script>
 	

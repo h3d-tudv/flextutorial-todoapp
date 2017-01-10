@@ -52,7 +52,7 @@
 		</s:NavigatorContent>
 		
 		<s:NavigatorContent label="List">
-			<gui:TaskListView id="taskListView" height="100%"/>
+			<gui:TaskCanbanView id="taskListView" height="100%"/>
 		</s:NavigatorContent>
 		
 		<ui:bottomGroup>
@@ -61,4 +61,5 @@
 			</s:Group>
 		</ui:bottomGroup>
 	</ui:VerticalTabNavigator>
+	<s:Label/>
 </s:Application>

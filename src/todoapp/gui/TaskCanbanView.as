@@ -7,12 +7,12 @@ package todoapp.gui
 	import todoapp.component.TaskDetail;
 	import todoapp.model.Task;
 	
-	public class TaskListView extends TaskModuleView
+	public class TaskCanbanView extends TaskModuleView
 	{
 		[Bindable]
 		public var selectedTask:Task;
 		
-		public function TaskListView()
+		public function TaskCanbanView()
 		{
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE, module_creationComplete);

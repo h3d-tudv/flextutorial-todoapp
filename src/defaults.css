@@ -15,8 +15,8 @@ s|Button#deleteButton{
 	skinClass:ClassReference("todoapp.gui.skin.DeleteButtonSkin");
 }
 
-gui|TaskListView{
-	skinClass:ClassReference("todoapp.gui.skin.TaskListViewSkin");
+gui|TaskCanbanView{
+	skinClass:ClassReference("todoapp.gui.skin.TaskCanbanViewSkin");
 }
 
 gui|TaskGridView{
