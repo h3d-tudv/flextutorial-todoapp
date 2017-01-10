@@ -21,6 +21,7 @@ package todoapp.service
 				var task:Task = new Task;
 				task.id = taskId++;
 				task.name = taskName;
+				task.done = (taskId % 3) == 0;
 				tasks.addItem(task);
 			}
 		}
@@ -34,12 +35,24 @@ package todoapp.service
 		}
 
 
-		public function find(completeCallback:Function = null, failCallback:Function=null):void
+		public function find(criteria:Object=null, completeCallback:Function = null, failCallback:Function=null):void
 		{
 			var results:ArrayCollection = new ArrayCollection;
 			for each (var task:Task in tasks)
 			{
-				results.addItem(task.clone());
+				var match:Boolean = true;
+				if (criteria != null)
+					for (var key:String in criteria)
+					{
+						if (!task.hasOwnProperty(key) || task[key] != criteria[key])
+						{
+							match = false;
+							break;
+						}
+					}
+				
+				if (match)
+					results.addItem(task.clone());
 			}
 			if (completeCallback != null)
 				completeCallback(results);

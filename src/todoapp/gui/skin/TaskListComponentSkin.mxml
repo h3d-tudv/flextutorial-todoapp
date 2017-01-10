@@ -7,7 +7,7 @@
 		[HostComponent("todoapp.gui.TaskListComponent")]
 	</fx:Metadata>
 	
-	<s:Group>
+	<s:Group width="100%" height="100%">
 		<s:layout>
 			<s:VerticalLayout gap="20"/>
 		</s:layout>
@@ -25,8 +25,8 @@
 				<s:Button id="addButton" label="Add" width="45"/>
 			</s:HGroup>
 		</s:VGroup>
-		<s:List id="taskList" width="220" borderVisible="false"
-				itemRenderer="todoapp.component.TaskItemRenderer" dragEnabled="true" dropEnabled="true">
+		<s:List id="taskList" width="220" borderVisible="false" height="100%" horizontalScrollPolicy="off"
+				itemRenderer="todoapp.component.TaskItemRenderer">
 			<s:layout>
 				<s:VerticalLayout gap="7"/>
 			</s:layout>

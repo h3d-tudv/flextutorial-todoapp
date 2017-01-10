@@ -62,7 +62,7 @@ package todoapp.gui
 		
 		public function loadViewData():void
 		{
-			taskService.find(
+			taskService.find(null,
 				function(result:ArrayCollection):void
 				{
 					if (tasks)

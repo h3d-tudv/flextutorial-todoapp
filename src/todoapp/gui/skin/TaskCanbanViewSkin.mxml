@@ -18,7 +18,8 @@
 		<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
 		<s:HGroup width="100%" height="100%" gap="100"
 				  verticalAlign="middle">
-			<gui:TaskListComponent id="taskListComponent" height="100%"/>
+			<gui:TaskListComponent id="doingTaskList" height="100%"/>
+			<gui:TaskListComponent id="doneTaskList" height="100%"/>
 			<component:TaskDetail id="taskDetail" height="100%"/>
 		</s:HGroup>
 	</s:VGroup>
