@@ -124,6 +124,7 @@ package todoapp.gui
 						if((e.detail & Alert.OK) == Alert.OK)
 						{
 							ArrayCollection(List(event.target).dataProvider).removeItem(event.data);
+							taskService.remove(event.data);
 						}
 					});	
 			}
@@ -145,6 +146,7 @@ package todoapp.gui
 				var newTask:Task = new Task;		
 				newTask.name = event.data as String;
 				dataProvider.addItem(newTask);
+				taskService.save(newTask);
 			}
 		}
 		

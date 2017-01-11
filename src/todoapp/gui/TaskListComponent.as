@@ -5,6 +5,7 @@ package todoapp.gui
 	import mx.collections.ArrayCollection;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
+	import mx.events.DragEvent;
 	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.Button;
@@ -22,7 +23,11 @@ package todoapp.gui
 		{
 			super();
 			Injector.inject(this);
+			this.addEventListener(DragEvent.DRAG_DROP, dragDropHandler,true);
 		}
+		
+		/*[Bindable]
+		public var dataProvider:ArrayCollection;*/
 		
 		private var _dataProvider:ArrayCollection;
 
@@ -64,6 +69,17 @@ package todoapp.gui
 				dispatchEvent(new TaskEvent(TaskEvent.ADD_TASK,data));
 					
 				taskNameInput.text = '';
+			}
+		}
+		
+		public function dragDropHandler(event:DragEvent):void
+		{
+			var itemsArray:Vector.<Object>=
+				event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
+			for each (var item:Object in itemsArray)
+			{
+				if (item.hasOwnProperty(statusField))
+					item[statusField] = status;
 			}
 		}
 		
