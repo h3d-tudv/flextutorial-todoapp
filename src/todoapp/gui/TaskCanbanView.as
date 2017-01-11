@@ -2,6 +2,7 @@ package todoapp.gui
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
@@ -30,6 +31,8 @@ package todoapp.gui
 		
 		[Bindable]
 		public var doneTasks:ArrayCollection;
+		
+		public var statusCollection:Dictionary = new Dictionary;
 		
 		public function TaskCanbanView()
 		{
@@ -72,8 +75,8 @@ package todoapp.gui
 					if (doingTasks)
 						doingTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler);
-					 doingTasks = result;
-					 doingTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+					statusCollection['false'] = doingTasks = result;
+					doingTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
 						collection_collectionChangeHandler, false, 0, true);
 				}
 			);
@@ -82,11 +85,11 @@ package todoapp.gui
 				function(result:ArrayCollection):void
 				{
 					if (doneTasks)
-					 doneTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-					collection_collectionChangeHandler);
-					 doneTasks = result;
-					 doneTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
-					collection_collectionChangeHandler, false, 0, true);
+						doneTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
+							collection_collectionChangeHandler);
+					statusCollection['true'] = doneTasks = result;
+					doneTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+						collection_collectionChangeHandler, false, 0, true);
 				}
 			);
 			
@@ -101,6 +104,17 @@ package todoapp.gui
 				for each (var item:Object in event.items)
 				{
 					var data:Object = (item is PropertyChangeEvent) ? PropertyChangeEvent(item).source : item;
+					if (data is Task && statusCollection[String(Task(data).done)] != event.target)
+					{
+						event.target.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
+							collection_collectionChangeHandler);
+						
+						ArrayCollection(event.target).removeItem(data);
+						ArrayCollection(statusCollection[String(Task(data).done)]).addItem(data);
+						
+						event.target.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+							collection_collectionChangeHandler, false, 0, true);
+					}
 					saveItems.push(data);
 				}
 				taskService.batchSave(saveItems);
