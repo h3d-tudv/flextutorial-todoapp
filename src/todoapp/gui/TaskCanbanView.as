@@ -99,6 +99,10 @@ package todoapp.gui
 								doingTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
 									collection_collectionChangeHandler);
 							statusDictionary[doingStatus.id] = doingTasks = result;
+							for each (var task:Task in doingTasks)
+							{
+								task.status = doingStatus;
+							}
 							doingTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
 								collection_collectionChangeHandler, false, 0, true);
 						}
@@ -111,6 +115,10 @@ package todoapp.gui
 								doneTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
 									collection_collectionChangeHandler);
 							statusDictionary[doneStatus.id] = doneTasks = result;
+							for each (var task:Task in doneTasks)
+							{
+								task.status = doneStatus;
+							}
 							doneTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
 								collection_collectionChangeHandler, false, 0, true);
 						}
@@ -207,6 +215,7 @@ package todoapp.gui
 		
 		[SkinPart(required="true",type="static")]
 		[PropertyBinding(task="selectedTask@")]
+		[PropertyBinding(statusCollection="statusCollection@")]
 		public var taskDetail:TaskDetail;
 	}
 }

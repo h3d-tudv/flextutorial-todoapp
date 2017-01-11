@@ -4,10 +4,23 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
 			import todoapp.model.Task;
 			
 			[Bindable]
 			public var task:Task;
+			
+			[Bindable]
+			public var statusCollection:ArrayCollection;
+			
+			protected function buttonStates_changeHandler(event:IndexChangeEvent):void
+			{
+				task.status = buttonStates.selectedItem;
+			}
+			
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -25,6 +38,12 @@
 		
 		<s:FormItem label="name:" color="#C0C0C0">
 			<s:TextInput id="nameInput" text="@{task.name}" width="200" color="#000000"/>
+		</s:FormItem>
+		
+		<s:FormItem label="State:" color="#C0C0C0">
+			<s:ButtonBar id="buttonStates" dataProvider="{statusCollection}"
+						 change="buttonStates_changeHandler(event)"
+						 selectedItem="{task.status}" labelField="name" color="#000000"/>
 		</s:FormItem>
 		
 		<s:FormItem label="description:" color="#C0C0C0">
