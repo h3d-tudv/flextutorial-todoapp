@@ -2,44 +2,34 @@ package todoapp.service
 {
 	import mx.collections.ArrayCollection;
 	
-	import net.fproject.utils.DataUtil;
-	
 	import todoapp.model.Status;
-	import todoapp.model.Task;
 	
-	public class TaskService
+	public class StatusService
 	{
-		protected var taskId:int;
+		protected var statusId:int;
 		
-		protected const TASK_NAMES:Array = ['Get some food', 'Feed the cat', 'Buy a gift for mom', 'Set up Site surveyor', 'Summit planning permission', 'Send presentation to professor', 'Return book to the library', 'Take out the trash', 'Send invitations', 'Go to the bank'];
+		protected const TASK_NAMES:Array = ['doing', 'done'];
 		
-		protected var tasks:ArrayCollection;
 		protected var statusCollection:ArrayCollection;
-		public function TaskService()
+		
+		public function StatusService()
 		{
-			taskId = 1;
-			tasks = new ArrayCollection;
-			StatusService.getInstance().find(null,
-				function(result:ArrayCollection):void
-				{
-					statusCollection = result;
-				}
-			);
-			for each (var taskName:String in TASK_NAMES){
-				var task:Task = new Task;
-				task.id = taskId++;
-				task.name = taskName;
-				if (statusCollection && statusCollection.length)
-					task.status = statusCollection.getItemAt((taskId % statusCollection.length)) as Status;
-				tasks.addItem(task);
+			statusId = 1;
+			statusCollection = new ArrayCollection;
+			
+			for each (var statusName:String in TASK_NAMES){
+				var status:Status = new Status;
+				status.id = statusId++;
+				status.name = statusName;
+				statusCollection.addItem(status);
 			}
 		}
 		
-		private static var _instance:TaskService;
-		public static function getInstance():TaskService
+		private static var _instance:StatusService;
+		public static function getInstance():StatusService
 		{
 			if (_instance == null)
-				_instance = new TaskService();
+				_instance = new StatusService();
 			return _instance;
 		}
 
@@ -47,13 +37,13 @@ package todoapp.service
 		public function find(criteria:Object=null, completeCallback:Function = null, failCallback:Function=null):void
 		{
 			var results:ArrayCollection = new ArrayCollection;
-			for each (var task:Task in tasks)
+			for each (var status:Status in statusCollection)
 			{
 				var match:Boolean = true;
 				if (criteria != null)
 					for (var key:String in criteria)
 					{
-						if (DataUtil.getFieldChainValue(task,key) != DataUtil.getFieldValue(criteria,key))
+						if (!status.hasOwnProperty(key) || status[key] != criteria[key])
 						{
 							match = false;
 							break;
@@ -61,52 +51,52 @@ package todoapp.service
 					}
 				
 				if (match)
-					results.addItem(task.clone());
+					results.addItem(status.clone());
 			}
 			if (completeCallback != null)
 				completeCallback(results);
 		}
 		
-		private function findById(id:int):Task
+		private function findById(id:int):Status
 		{
 			if (isNaN(id))
 				return null;
-			for each (var task:Task in tasks){
-				if (task.id == id)
-					return task;
+			for each (var status:Status in statusCollection){
+				if (status.id == id)
+					return status;
 			}
 			return null;
 		}
 		public function findOne(id:int, completeCallback:Function = null, failCallback:Function=null):void
 		{
-			var task:Task = findById(id);
-			if (task != null && completeCallback != null)
-				completeCallback(task.clone());
+			var status:Status = findById(id);
+			if (status != null && completeCallback != null)
+				completeCallback(status.clone());
 			else if (completeCallback != null)
 				completeCallback(null);
 		}
 		
 		public function save(model:Object, completeCallback:Function=null, failCallback:Function=null):void
 		{
-			var task:Task = model as Task;
-			if (task == null)
+			var status:Status = model as Status;
+			if (status == null)
 			{
 				if (failCallback != null)
 					failCallback(false);
 				return;
 			}
-			if (isNaN(task.id) || task.id == 0)
-				task.id = taskId++;
+			if (isNaN(status.id) || status.id == 0)
+				status.id = statusId++;
 			else
-				taskId = (task.id >= taskId) ? task.id + 1 : taskId;
+				statusId = (status.id >= statusId) ? status.id + 1 : statusId;
 			
-			var oldTask:Task = findById(task.id);
-			if (oldTask != null)
-				task.clone(oldTask); //update
+			var oldStatus:Status = findById(status.id);
+			if (oldStatus != null)
+				status.clone(oldStatus); //update
 			else
-				tasks.addItem(task); //add
+				statusCollection.addItem(status); //add
 			if (completeCallback != null)
-				completeCallback(task.id);
+				completeCallback(status.id);
 		}
 		
 		public function remove(data:Object, completeCallback:Function=null, failCallback:Function=null):void
@@ -119,9 +109,9 @@ package todoapp.service
 			else if (data.hasOwnProperty('id'))
 				id = Number(data['id']);
 
-			var task:Task = findById(id);
-			if (task != null)
-				tasks.removeItem(task);
+			var status:Status = findById(id);
+			if (status != null)
+				statusCollection.removeItem(status);
 			if (completeCallback != null)
 				completeCallback(true);
 		}
@@ -132,8 +122,8 @@ package todoapp.service
 			var updateCount:int = 0;
 			for each (var model:Object in models)
 			{
-				if (model is Task){
-					if (isNaN(Task(model).id) || Task(model).id == 0)
+				if (model is Status){
+					if (isNaN(Status(model).id) || Status(model).id == 0)
 					{
 						insertCount++;
 					}
@@ -144,7 +134,7 @@ package todoapp.service
 					save(model);
 				}
 			}
-			var result:Object = {insertCount:insertCount, updateCount:updateCount, lastId:taskId};
+			var result:Object = {insertCount:insertCount, updateCount:updateCount, lastId:statusId};
 			if (completeCallback != null)
 				completeCallback(result);
 		}

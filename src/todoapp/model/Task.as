@@ -9,7 +9,7 @@ package todoapp.model
 		[Bindable]
 		public var description:String;
 		[Bindable]
-		public var done:Boolean;
+		public var status:Status;
 		
 		public function clone(target:Task=null):Task
 		{
@@ -18,7 +18,7 @@ package todoapp.model
 			target.id = this.id;
 			target.name = this.name;
 			target.description = this.description;
-			target.done = this.done;
+			target.status = this.status;
 			return target;
 		}
 	}

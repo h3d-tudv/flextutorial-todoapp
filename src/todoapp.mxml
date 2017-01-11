@@ -51,7 +51,7 @@
 			<gui:TaskGridView id="taskGridView" height="100%"/>
 		</s:NavigatorContent>
 		
-		<s:NavigatorContent label="List">
+		<s:NavigatorContent label="Canban">
 			<gui:TaskCanbanView id="taskCanbanView" height="100%"/>
 		</s:NavigatorContent>
 		

@@ -18,7 +18,9 @@ package todoapp.gui
 	
 	import todoapp.component.TaskDetail;
 	import todoapp.event.TaskEvent;
+	import todoapp.model.Status;
 	import todoapp.model.Task;
+	import todoapp.service.StatusService;
 	import todoapp.service.TaskService;
 	
 	public class TaskCanbanView extends TaskModuleView
@@ -32,7 +34,16 @@ package todoapp.gui
 		[Bindable]
 		public var doneTasks:ArrayCollection;
 		
-		public var statusCollection:Dictionary = new Dictionary;
+		[Bindable]
+		public var statusCollection:ArrayCollection;
+		
+		[Bindable]
+		public var doingStatus:Status;
+		
+		[Bindable]
+		public var doneStatus:Status;
+		
+		public var statusDictionary:Dictionary = new Dictionary;
 		
 		public function TaskCanbanView()
 		{
@@ -62,6 +73,11 @@ package todoapp.gui
 			return TaskService.getInstance();
 		}
 		
+		public function get statusService():StatusService
+		{
+			return StatusService.getInstance();
+		}
+		
 		override public function connectView():void
 		{
 			loadViewData();
@@ -69,27 +85,36 @@ package todoapp.gui
 		
 		public function loadViewData():void
 		{
-			taskService.find({done:false},
+			statusService.find(null,
 				function(result:ArrayCollection):void
 				{
-					if (doingTasks)
-						doingTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-							collection_collectionChangeHandler);
-					statusCollection['false'] = doingTasks = result;
-					doingTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
-						collection_collectionChangeHandler, false, 0, true);
-				}
-			);
-			
-			taskService.find({done:true},
-				function(result:ArrayCollection):void
-				{
-					if (doneTasks)
-						doneTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-							collection_collectionChangeHandler);
-					statusCollection['true'] = doneTasks = result;
-					doneTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
-						collection_collectionChangeHandler, false, 0, true);
+					statusCollection = result;
+					doingStatus = statusCollection.getItemAt(0) as Status;
+					doneStatus = statusCollection.getItemAt(1) as Status;
+					
+					taskService.find({"status.id":doingStatus.id},
+						function(result:ArrayCollection):void
+						{
+							if (doingTasks)
+								doingTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
+									collection_collectionChangeHandler);
+							statusDictionary[doingStatus.id] = doingTasks = result;
+							doingTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+								collection_collectionChangeHandler, false, 0, true);
+						}
+					);
+					
+					taskService.find({"status.id":doneStatus.id},
+						function(result:ArrayCollection):void
+						{
+							if (doneTasks)
+								doneTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
+									collection_collectionChangeHandler);
+							statusDictionary[doneStatus.id] = doneTasks = result;
+							doneTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+								collection_collectionChangeHandler, false, 0, true);
+						}
+					);
 				}
 			);
 			
@@ -104,19 +129,19 @@ package todoapp.gui
 				for each (var item:Object in event.items)
 				{
 					var data:Object = (item is PropertyChangeEvent) ? PropertyChangeEvent(item).source : item;
-					if (data is Task && statusCollection[String(Task(data).done)] != event.target)
+					if (data is Task && Task(data).status && statusDictionary[String(Task(data).status.id)] != event.target)
 					{
 						event.target.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler);
-						statusCollection[String(Task(data).done)].removeEventListener(CollectionEvent.COLLECTION_CHANGE,
+						statusDictionary[String(Task(data).status.id)].removeEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler);
 						
 						ArrayCollection(event.target).removeItem(data);
-						ArrayCollection(statusCollection[String(Task(data).done)]).addItem(data);
+						ArrayCollection(statusDictionary[String(Task(data).status.id)]).addItem(data);
 						
 						event.target.addEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler, false, 0, true);
-						statusCollection[String(Task(data).done)].addEventListener(CollectionEvent.COLLECTION_CHANGE,
+						statusDictionary[String(Task(data).status.id)].addEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler, false, 0, true);
 					}
 					saveItems.push(data);
@@ -170,14 +195,14 @@ package todoapp.gui
 		
 		[SkinPart(required="true",type="static")]
 		[PropertyBinding(dataProvider="doingTasks@")]
-		[PropertyBinding(statusField="'done'")]
-		[PropertyBinding(status="false")]
+		[PropertyBinding(statusField="'status'")]
+		[PropertyBinding(status="doingStatus@")]
 		public var doingTaskList:TaskListComponent;
 		
 		[SkinPart(required="true",type="static")]
 		[PropertyBinding(dataProvider="doneTasks@")]
-		[PropertyBinding(statusField="'done'")]
-		[PropertyBinding(status="true")]
+		[PropertyBinding(statusField="'status'")]
+		[PropertyBinding(status="doneStatus@")]
 		public var doneTaskList:TaskListComponent;
 		
 		[SkinPart(required="true",type="static")]
