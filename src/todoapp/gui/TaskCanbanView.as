@@ -108,11 +108,15 @@ package todoapp.gui
 					{
 						event.target.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler);
+						statusCollection[String(Task(data).done)].removeEventListener(CollectionEvent.COLLECTION_CHANGE,
+							collection_collectionChangeHandler);
 						
 						ArrayCollection(event.target).removeItem(data);
 						ArrayCollection(statusCollection[String(Task(data).done)]).addItem(data);
 						
 						event.target.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+							collection_collectionChangeHandler, false, 0, true);
+						statusCollection[String(Task(data).done)].addEventListener(CollectionEvent.COLLECTION_CHANGE,
 							collection_collectionChangeHandler, false, 0, true);
 					}
 					saveItems.push(data);
