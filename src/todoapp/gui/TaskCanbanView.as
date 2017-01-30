@@ -2,10 +2,12 @@ package todoapp.gui
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.controls.LinkButton;
 	import mx.core.FlexGlobals;
 	import mx.events.CloseEvent;
 	import mx.events.CollectionEvent;
@@ -16,6 +18,8 @@ package todoapp.gui
 	import spark.components.List;
 	import spark.events.IndexChangeEvent;
 	
+	import todoapp.component.DialogBase;
+	import todoapp.component.StatusDialog;
 	import todoapp.component.TaskDetail;
 	import todoapp.event.TaskEvent;
 	import todoapp.model.Status;
@@ -200,6 +204,16 @@ package todoapp.gui
 				taskService.save(newTask);
 			}
 		}
+		
+		public function createColumnButton_clickHandler(event:MouseEvent):void
+		{
+			var statusDialog:StatusDialog = DialogBase.getInstance(StatusDialog) as StatusDialog;
+			statusDialog.showDialog(this,false);
+		}
+		
+		[SkinPart(required="true",type="static")]
+		[EventHandling(event="click", handler="createColumnButton_clickHandler")]
+		public var createColumnButton:LinkButton;
 		
 		[SkinPart(required="true",type="static")]
 		[PropertyBinding(dataProvider="doingTasks@")]
