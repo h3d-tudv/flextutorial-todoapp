@@ -2,6 +2,7 @@
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace gui "todoapp.gui.*";
+@namespace component "todoapp.component.*";
 
 gui|TaskListComponent{
 	skinClass:ClassReference("todoapp.gui.skin.TaskListComponentSkin");
@@ -21,4 +22,11 @@ gui|TaskCanbanView{
 
 gui|TaskGridView{
 	skinClass:ClassReference("todoapp.gui.skin.TaskGridViewSkin");
+}
+
+component|DialogBase{
+	skinClass:ClassReference("todoapp.component.DialogBaseSkin");
+
+component|StatusDialog{
+	skinClass:ClassReference("todoapp.component.StatusDialogSkin");
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component:DialogBaseSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		xmlns:skins="flatspark.skins.*"
+		xmlns:component="todoapp.component.*"
+		height="240" width="550">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("todoapp.component.StatusDialog")]
+	</fx:Metadata>
+	<fx:Declarations>
+		<s:Group id="dialogContent" width="100%" height="100%">
+			<s:VGroup width="100%" height="100%" minWidth="0" minHeight="0" padding="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label id="nameLabel" text="Status Name: "/>
+					<s:TextInput id="nameInput" width="100%"/>
+				</s:HGroup>		
+				
+				<s:TextArea id="statusDescription" heightInLines="5" width="100%" prompt="status Description"/>
+			</s:VGroup>
+			
+			
+			<s:HGroup id="buttonGroup" width="100%" bottom="10" horizontalAlign="right" paddingRight="10" gap="10">
+				<s:Button id="okButton" label="OK"/>
+				<s:Button id="cancelButton" label="CANCEL"/>
+			</s:HGroup>
+		</s:Group>
+	</fx:Declarations>
+</component:DialogBaseSkin>
