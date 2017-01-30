@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skins:TitleWindowSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:skins="flatspark.skins.*"
+					   height="480" width="685">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("todoapp.component.DialogBase")]
+	</fx:Metadata>
+</skins:TitleWindowSkin>
