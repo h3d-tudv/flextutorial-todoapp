@@ -86,12 +86,12 @@ package todoapp.gui
 		{
 			while (statusCount)
 				contentGroup.removeElementAt(--statusCount);
+			statusCollection = new ArrayCollection;
 			
 			statusService.find(null,
 				function(result:ArrayCollection):void
 				{
-					statusCollection = result;
-					for each (var status:Status in statusCollection)
+					for each (var status:Status in result)
 					{
 						createNewColumn(status);
 					}
@@ -175,6 +175,7 @@ package todoapp.gui
 		
 		public function createNewColumn(newStatus:Status):void
 		{
+			statusCollection.addItem(newStatus);
 			var newColumn:TaskListComponent = new TaskListComponent;
 			newColumn.status = newStatus;
 			newColumn.statusField = 'status';
