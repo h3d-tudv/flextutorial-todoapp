@@ -26,6 +26,7 @@ gui|TaskGridView{
 
 component|DialogBase{
 	skinClass:ClassReference("todoapp.component.DialogBaseSkin");
+}
 
 component|StatusDialog{
 	skinClass:ClassReference("todoapp.component.StatusDialogSkin");

@@ -48,11 +48,11 @@
 		</ui:topGroup>
 		
 		<s:NavigatorContent label="data Grid">
-			<gui:TaskGridView id="taskGridView" height="100%"/>
+			<gui:TaskGridView id="taskGridView" height="100%" width="100%"/>
 		</s:NavigatorContent>
 		
-		<s:NavigatorContent label="Canban">
-			<gui:TaskCanbanView id="taskCanbanView" height="100%"/>
+		<s:NavigatorContent label="Canban" creationPolicy="all">
+			<gui:TaskCanbanView id="taskCanbanView" height="100%" width="100%"/>
 		</s:NavigatorContent>
 		
 		<ui:bottomGroup>

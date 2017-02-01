@@ -15,13 +15,13 @@
 	</fx:Script>
 	
 	<s:VGroup width="100%" height="100%" padding="30" gap="50">
-		<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
-		<mx:LinkButton id="createColumnButton" label="Create new Status Column"/>
-		<s:HGroup width="100%" height="100%" gap="50"
-				  verticalAlign="middle">
-			<gui:TaskListComponent id="doingTaskList" height="100%"/>
-			<gui:TaskListComponent id="doneTaskList" height="100%"/>
-			<component:TaskDetail id="taskDetail" height="100%"/>
-		</s:HGroup>
+			<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
+			<mx:LinkButton id="createColumnButton" label="Create new Status Column"/>
+		<s:Scroller width="100%" height="100%">
+			<s:HGroup width="100%" height="100%" gap="50" id="contentGroup"
+					  verticalAlign="middle">
+				<component:TaskDetail id="taskDetail" height="100%"/>
+			</s:HGroup>
+		</s:Scroller>			
 	</s:VGroup>
 </s:Skin>

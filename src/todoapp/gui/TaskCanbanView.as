@@ -6,6 +6,7 @@ package todoapp.gui
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.IList;
 	import mx.controls.Alert;
 	import mx.controls.LinkButton;
 	import mx.core.FlexGlobals;
@@ -15,8 +16,11 @@ package todoapp.gui
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	
+	import spark.components.HGroup;
 	import spark.components.List;
 	import spark.events.IndexChangeEvent;
+	
+	import net.fproject.utils.StringUtil;
 	
 	import todoapp.component.DialogBase;
 	import todoapp.component.StatusDialog;
@@ -47,6 +51,8 @@ package todoapp.gui
 		[Bindable]
 		public var doneStatus:Status;
 		
+		protected var statusCount:int = 0;
+		
 		public var statusDictionary:Dictionary = new Dictionary;
 		
 		public function TaskCanbanView()
@@ -57,18 +63,6 @@ package todoapp.gui
 		
 		protected function module_creationComplete(event:FlexEvent):void
 		{
-			if (doingTaskList)
-			{
-				doingTaskList.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler,true);
-				doingTaskList.addEventListener(TaskEvent.ADD_TASK, onAddTaskHandler);
-				doingTaskList.addEventListener(TaskEvent.DELETE_TASK, onDeleteTaskHandler,true);
-			}
-			if (doneTaskList)
-			{
-				doneTaskList.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler,true);
-				doneTaskList.addEventListener(TaskEvent.ADD_TASK, onAddTaskHandler);
-				doneTaskList.addEventListener(TaskEvent.DELETE_TASK, onDeleteTaskHandler,true);
-			}
 			loadViewData();
 		}
 		
@@ -84,53 +78,35 @@ package todoapp.gui
 		
 		override public function connectView():void
 		{
-			loadViewData();
+			if (contentGroup)
+				loadViewData();
 		}
 		
 		public function loadViewData():void
 		{
+			while (statusCount)
+				contentGroup.removeElementAt(--statusCount);
+			
 			statusService.find(null,
 				function(result:ArrayCollection):void
 				{
 					statusCollection = result;
-					doingStatus = statusCollection.getItemAt(0) as Status;
-					doneStatus = statusCollection.getItemAt(1) as Status;
-					
-					taskService.find({"status.id":doingStatus.id},
-						function(result:ArrayCollection):void
-						{
-							if (doingTasks)
-								doingTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-									collection_collectionChangeHandler);
-							statusDictionary[doingStatus.id] = doingTasks = result;
-							for each (var task:Task in doingTasks)
-							{
-								task.status = doingStatus;
-							}
-							doingTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
-								collection_collectionChangeHandler, false, 0, true);
-						}
-					);
-					
-					taskService.find({"status.id":doneStatus.id},
-						function(result:ArrayCollection):void
-						{
-							if (doneTasks)
-								doneTasks.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-									collection_collectionChangeHandler);
-							statusDictionary[doneStatus.id] = doneTasks = result;
-							for each (var task:Task in doneTasks)
-							{
-								task.status = doneStatus;
-							}
-							doneTasks.addEventListener(CollectionEvent.COLLECTION_CHANGE,
-								collection_collectionChangeHandler, false, 0, true);
-						}
-					);
+					for each (var status:Status in statusCollection)
+					{
+						createNewColumn(status);
+					}
 				}
 			);
 			
 			selectedTask = null;
+		}
+		
+		protected override function partAdded(partName:String, instance:Object):void
+		{
+			super.partAdded(partName, instance);
+			
+			if(instance == contentGroup)
+				loadViewData();
 		}
 		
 		protected function collection_collectionChangeHandler(event:CollectionEvent):void
@@ -189,15 +165,7 @@ package todoapp.gui
 		{
 			if (event.data && event.target is TaskListComponent)
 			{
-				var dataProvider:ArrayCollection;
-				switch (event.target) {
-					case doingTaskList:
-						dataProvider = doingTasks;
-						break;
-					case doneTaskList:
-						dataProvider = doneTasks;
-						break;
-				}
+				var dataProvider:IList = TaskListComponent(event.target).taskList.dataProvider;
 				var newTask:Task = new Task;		
 				newTask.name = event.data as String;
 				dataProvider.addItem(newTask);
@@ -205,27 +173,69 @@ package todoapp.gui
 			}
 		}
 		
-		public function createColumnButton_clickHandler(event:MouseEvent):void
+		public function createNewColumn(newStatus:Status):void
 		{
-			var statusDialog:StatusDialog = DialogBase.getInstance(StatusDialog) as StatusDialog;
-			statusDialog.showDialog(this,false);
+			var newColumn:TaskListComponent = new TaskListComponent;
+			newColumn.status = newStatus;
+			newColumn.statusField = 'status';
+			statusDictionary[newStatus.id] = newColumn.dataProvider = new ArrayCollection;
+			newColumn.percentHeight = 100;
+			
+			//addEvent
+			newColumn.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler,true);
+			newColumn.addEventListener(TaskEvent.ADD_TASK, onAddTaskHandler);
+			newColumn.addEventListener(TaskEvent.DELETE_TASK, onDeleteTaskHandler,true);
+			
+			//load data
+			taskService.find({"status.id":newStatus.id},
+				function(result:ArrayCollection):void
+				{
+					statusDictionary[newStatus.id] = result;
+					for each (var task:Task in result)
+					{
+						task.status = newStatus;
+					}
+					newColumn.dataProvider = result;
+					result.addEventListener(CollectionEvent.COLLECTION_CHANGE,
+						collection_collectionChangeHandler, false, 0, true);
+				}
+			);
+			
+			//work-around vì:
+			//nếu chưa có dữ liệu, list sẽ chưa display --> first element index = -1 --> Hàm caculate drop position bị lỗi
+			var newTask:Task = new Task;
+			newTask.name = "hehe";
+			newTask.status = newStatus;
+			
+			newColumn.dataProvider.addItem(newTask);
+			contentGroup.addElementAt(newColumn,statusCount++);
 		}
 		
+		public function createColumnButton_clickHandler(event:MouseEvent):void
+		{
+			var newStatus:Status = new Status;
+			var statusDialog:StatusDialog = DialogBase.getInstance(StatusDialog) as StatusDialog;
+			statusDialog.show(newStatus,this,false,
+				function():void
+				{
+					if (!(StringUtil.isBlank(newStatus.name)))
+						statusService.save(newStatus,
+							function(result:Object):void
+							{
+								createNewColumn(newStatus);
+							}
+						);
+				}
+			);
+		}
+		
+		
+		[SkinPart(required="true",type="static")]
+		public var contentGroup:HGroup;
+			
 		[SkinPart(required="true",type="static")]
 		[EventHandling(event="click", handler="createColumnButton_clickHandler")]
 		public var createColumnButton:LinkButton;
-		
-		[SkinPart(required="true",type="static")]
-		[PropertyBinding(dataProvider="doingTasks@")]
-		[PropertyBinding(statusField="'status'")]
-		[PropertyBinding(status="doingStatus@")]
-		public var doingTaskList:TaskListComponent;
-		
-		[SkinPart(required="true",type="static")]
-		[PropertyBinding(dataProvider="doneTasks@")]
-		[PropertyBinding(statusField="'status'")]
-		[PropertyBinding(status="doneStatus@")]
-		public var doneTaskList:TaskListComponent;
 		
 		[SkinPart(required="true",type="static")]
 		[PropertyBinding(task="selectedTask@")]
