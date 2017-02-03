@@ -9,6 +9,7 @@ package todoapp.gui
 	import mx.collections.IList;
 	import mx.controls.Alert;
 	import mx.controls.LinkButton;
+	import mx.controls.VRule;
 	import mx.core.FlexGlobals;
 	import mx.events.CloseEvent;
 	import mx.events.CollectionEvent;
@@ -161,6 +162,31 @@ package todoapp.gui
 			}
 		}
 		
+		public function onDeleteColumnHandler(event:Event):void
+		{
+			var column:TaskListComponent = event.target as TaskListComponent;
+			if (column == null || contentGroup == null)
+				return;
+			var index:int = contentGroup.getElementIndex(column);
+			
+			Alert.show("Are you sure you want to delete this Status", "Delete Status confirm", Alert.OK | Alert.CANCEL,
+				FlexGlobals.topLevelApplication as Sprite,
+				function(e:CloseEvent):void
+				{
+					if((e.detail & Alert.OK) == Alert.OK)
+					{
+						statusCollection.removeItem(column.status);
+						contentGroup.removeElementAt(index--);
+						statusCount--;
+						if (index >= 0)
+						{
+							contentGroup.removeElementAt(index); //	xóa rule phân cách
+							statusCount--;
+						}
+					}
+				});	
+		}
+		
 		public function onAddTaskHandler(event:TaskEvent):void
 		{
 			if (event.data && event.target is TaskListComponent)
@@ -186,6 +212,7 @@ package todoapp.gui
 			newColumn.addEventListener(IndexChangeEvent.CHANGE, taskList_changeHandler,true);
 			newColumn.addEventListener(TaskEvent.ADD_TASK, onAddTaskHandler);
 			newColumn.addEventListener(TaskEvent.DELETE_TASK, onDeleteTaskHandler,true);
+			newColumn.addEventListener(TaskListComponent.DELETE_COLUMN, onDeleteColumnHandler);
 			
 			//load data
 			taskService.find({"status.id":newStatus.id},
@@ -209,6 +236,12 @@ package todoapp.gui
 			newTask.status = newStatus;
 			
 			newColumn.dataProvider.addItem(newTask);
+			if (statusCount)
+			{
+				var newRuler:VRule = new VRule;
+				newRuler.percentHeight = 100;
+				contentGroup.addElementAt(newRuler, statusCount++);
+			}
 			contentGroup.addElementAt(newColumn,statusCount++);
 		}
 		
@@ -233,7 +266,7 @@ package todoapp.gui
 		
 		[SkinPart(required="true",type="static")]
 		public var contentGroup:HGroup;
-			
+		
 		[SkinPart(required="true",type="static")]
 		[EventHandling(event="click", handler="createColumnButton_clickHandler")]
 		public var createColumnButton:LinkButton;

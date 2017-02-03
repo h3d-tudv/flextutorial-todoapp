@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:gui="todoapp.gui.*" 
-		xmlns:component="todoapp.component.*">
+		xmlns:component="todoapp.component.*" xmlns:ns="http://f-project.net/xmlns/fprj-ui/2015">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("todoapp.gui.TaskCanbanView")]
@@ -14,14 +14,32 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%" height="100%" padding="30" gap="50">
-			<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
-			<mx:LinkButton id="createColumnButton" label="Create new Status Column"/>
-		<s:Scroller width="100%" height="100%">
-			<s:HGroup width="100%" height="100%" gap="50" id="contentGroup"
-					  verticalAlign="middle">
-				<component:TaskDetail id="taskDetail" height="100%"/>
-			</s:HGroup>
-		</s:Scroller>			
+	<fx:Declarations>
+		<s:SolidColor id="backGroundFill" color="#F9F9F9" />
+	</fx:Declarations>
+	
+	<s:VGroup width="100%" height="100%" padding="30" gap="20">
+		<s:Label text="Todo Tasks" fontSize="50" color="#4800FF" verticalCenter="0" horizontalCenter="0"/>
+		<mx:LinkButton id="createColumnButton" label="Create new Status Column" color="#0A6CFF"/>
+		<ns:CompassContainer id="compassView" width="100%" height="100%" eastWidth="300"
+							 eastCanBeMinimized="true" showCenterChrome="false" eastCanBeClosed="false" gap="2"
+							 eastRegionTitle="Task detail"> 
+			<!-- - center  -->
+			<s:Scroller height="100%" width="100%">
+				<s:Group>
+					<s:BorderContainer width="100%" height="100%" backgroundFill="{backGroundFill}" borderVisible="false">
+						<s:Scroller width="100%" height="100%">
+							<s:HGroup width="100%" height="100%" id="contentGroup" gap="0"
+									  verticalAlign="top">
+							</s:HGroup>
+						</s:Scroller>	
+					</s:BorderContainer>
+				</s:Group>
+			</s:Scroller>
+			
+			<ns:eastContent>
+				<component:TaskDetail id="taskDetail" height="100%" left="10"/>
+			</ns:eastContent>
+		</ns:CompassContainer>
 	</s:VGroup>
 </s:Skin>

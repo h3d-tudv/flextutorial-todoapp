@@ -31,3 +31,7 @@ component|DialogBase{
 component|StatusDialog{
 	skinClass:ClassReference("todoapp.component.StatusDialogSkin");
 }
+
+component|EditColumnComponent{
+	skinClass:ClassReference("todoapp.component.EditColumnCoponentSkin");
+}

@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx">
+		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="http://f-project.net/xmlns/fprj-ui/2015" xmlns:component="todoapp.component.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("todoapp.gui.TaskListComponent")]
 	</fx:Metadata>
 	
-	<s:Group width="100%" height="100%">
-		<s:layout>
-			<s:VerticalLayout gap="20"/>
-		</s:layout>
-		<fx:Script>
-			<![CDATA[
-				import todoapp.component.TaskItemRenderer;
-			]]>
-		</fx:Script>
+	<s:BorderContainer width="100%" borderVisible="false" borderColor="#B9B9B9">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="#F9F9F9" /></s:fill>
+		</s:Rect>
 		
-		<s:Label text="Task List" fontSize="20"/>
-		<s:VGroup gap="2">
-			<s:Label text="Task Name: " color="#A0A0A0"/>
-			<s:HGroup verticalAlign="middle">
-				<s:TextInput id="taskNameInput" width="170"/>
-				<s:Button id="addButton" label="Add" width="45"/>
+		<s:VGroup gap="20" width="100%" height="100%" padding="10">
+			<s:HGroup horizontalAlign="right" width="100%">
+				<s:Label id="statusNameLabel" width="100%" fontWeight="bold"/>
+				
+				<component:EditColumnComponent id="editColumnComponent">
+					<s:VGroup width="80" gap="0">
+						<s:Button id="editColumnButton" label="Edit" width="100%" skinClass="todoapp.gui.skin.FlatButtonSkin"/>
+						<s:Button id="removeColumnButton" label="Remove" width="100%" skinClass="todoapp.gui.skin.FlatButtonSkin"/>
+					</s:VGroup>
+				</component:EditColumnComponent>
+				<mx:LinkButton id="quickAddLinkButton" label="+" fontWeight="bold"/>
 			</s:HGroup>
+			
+			<s:VGroup gap="2" width="100%" id="quickAddGroup" includeInLayout="false" visible="false">
+				<s:TextInput id="taskNameInput" prompt="Enter Task Name" width="100%"/>
+				<s:HGroup verticalAlign="middle">
+					<s:Button id="addButton" label="Add" width="45" color="#0A6CFF"/>
+					<s:Label text=" or "/>
+					<mx:LinkButton label="Cancel" id="cancelLinkButton" color="#0A6CFF"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:List id="taskList" height="100%" width="220" borderVisible="false" horizontalScrollPolicy="off" contentBackgroundColor="#F9F9F9"
+					itemRenderer="todoapp.component.TaskItemRenderer">
+				<s:layout>
+					<s:VerticalLayout gap="7"/>
+				</s:layout>
+			</s:List>
 		</s:VGroup>
-		<s:List id="taskList" width="220" borderVisible="false" height="100%" horizontalScrollPolicy="off"
-				itemRenderer="todoapp.component.TaskItemRenderer">
-			<s:layout>
-				<s:VerticalLayout gap="7"/>
-			</s:layout>
-		</s:List>
-	</s:Group>
+	</s:BorderContainer>
 </s:Skin>

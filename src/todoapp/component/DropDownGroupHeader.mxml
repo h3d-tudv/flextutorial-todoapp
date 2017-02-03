@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:ns="http://f-project.net/xmlns/fprj-ui/2015"
+		 creationComplete="module_creationCompleteHandler(event)">
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled"/>
+		<s:State name="open"/>
+		<s:State name="close"/>
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.graphics.SolidColor;
+			
+			[Bindable]
+			public var textLabel:String = "2";
+			
+			protected function createFill():SolidColor{
+				var fill:SolidColor = new SolidColor;
+				fill.color = 6710886;
+				return fill;
+			}
+			
+			public function set label(value:String):void
+			{
+				textLabel = value;
+			}
+			
+			public function get label():String
+			{
+				return labelDisplay.text;
+			}
+			
+			protected function module_creationCompleteHandler(event:FlexEvent):void
+			{
+				currentState = 'close';
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group minHeight="20" minWidth="20">
+		<s:Label id="labelDisplay" includeIn="close" fontWeight="bold"
+				 text="{textLabel}"
+				 verticalAlign="middle"
+				 maxDisplayedLines="1"
+				 horizontalCenter="0" verticalCenter="1"
+				 styleName="quickFilterLabel"/>
+		
+		<ns:Triangle height="12" width="8" rotation="270" verticalCenter="0" horizontalCenter="0" includeIn="open"
+					 fill="{createFill()}"/>
+	</s:Group>
+</s:Group>
